@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "position": { "x": 0, "y": 0 },
+    "connections": [1, 2]
+  },
+  {
+    "id": 1,
+    "position": { "x": 5, "y": 2 },
+    "connections": [0, 2]
+  },
+  {
+    "id": 2,
+    "position": { "x": 2, "y": 5 },
+    "connections": [0, 1]
+  }
+]
