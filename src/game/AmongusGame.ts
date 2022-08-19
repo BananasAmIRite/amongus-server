@@ -73,7 +73,7 @@ export default class AmongusGame {
 
   private start() {
     this.started = true;
-    this.mapLoader.setMap('map-map.png', './assets/main-map-collision.png', './assets/main-map-tasks.json');
+    this.mapLoader.setMap('main-map.png', './assets/main-map-collision.png', './assets/main-map-tasks.json');
     this.imposters = randomSubset(this.players, IMPOSTER_AMOUNT);
   }
 
