@@ -4,6 +4,7 @@ import AmongusPlayer from './AmongusPlayer';
 import AmongusSocket, { ClientMessageType, ServerAmongusPayloadType, ServerMessageType } from '../AmongusSocket';
 import { randomSubset } from '../utils/utils';
 import { IMPOSTER_AMOUNT } from '../constants';
+import { Server } from 'http';
 
 // declare interface AmongusSocket {
 //   on<K extends ClientMessageType>(s: K, listener: (v: AmongusPayload<K>) => void): this;
@@ -52,9 +53,23 @@ export default class AmongusGame {
     this.players.push(p);
   }
 
-  public removePlayer(conn: AmongusSocket) {
-    const i = this.players.findIndex((e) => e.getConnection() === conn);
-    if (i >= 0) this.players.splice(i, 1);
+  public removePlayer(plr: AmongusPlayer) {
+    const i = this.players.findIndex((e) => e.getId() === plr.getId());
+    if (i < 0) return;
+
+    this.players.splice(i, 1);
+
+    this.broadcast(ServerMessageType.PLAYER_LEAVE, { playerId: plr.getId() });
+    this.checkGameOver();
+    this.removeImposter(plr);
+  }
+
+  private removeImposter(imposter: AmongusPlayer) {
+    const i = this.imposters.findIndex((e) => e.getId() === imposter.getId());
+    if (i < 0) return;
+
+    this.imposters.splice(i, 1);
+    this.checkGameOver();
   }
 
   public broadcast<T extends ServerMessageType>(type: T, payload: ServerAmongusPayloadType[T]) {
@@ -98,7 +113,9 @@ export default class AmongusGame {
   }
 
   private removeAllListeners(p: AmongusPlayer) {
-    for (const evt of Object.values(ServerMessageType)) {
+    // remove ALL listeners EXCEPT the JOIN listener because we need that for future join requests
+    for (const evt of Object.values(ClientMessageType)) {
+      if (evt === ClientMessageType.JOIN) continue;
       p.getConnection().removeAllListeners(evt);
     }
   }

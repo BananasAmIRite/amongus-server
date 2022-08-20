@@ -31,7 +31,15 @@ export default class AmongusPlayer {
     this.tasks.splice(taskIdx, 1);
   };
 
-  public constructor(private game: AmongusGame, private connection: AmongusSocket) {}
+  public constructor(private game: AmongusGame, private connection: AmongusSocket) {
+    connection.getSocket().on('disconnect', () => {
+      game.removePlayer(this);
+    });
+
+    connection.on(ClientMessageType.LEAVE, () => {
+      game.removePlayer(this);
+    });
+  }
 
   public startGame(isImposter: boolean) {
     this.isDead = false;
