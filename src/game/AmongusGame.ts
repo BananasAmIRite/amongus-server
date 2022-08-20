@@ -97,7 +97,16 @@ export default class AmongusGame {
     this.end();
   }
 
+  private removeAllListeners(p: AmongusPlayer) {
+    for (const evt of Object.values(ServerMessageType)) {
+      p.getConnection().removeAllListeners(evt);
+    }
+  }
+
   private end() {
+    for (const p of this.players) {
+      this.removeAllListeners(p);
+    }
     this.manager.removeGame(this.id);
   }
 }
