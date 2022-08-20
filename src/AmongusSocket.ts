@@ -17,7 +17,7 @@ export enum ClientMessageType {
 }
 
 export type ClientAmongusPayloadType = {
-  [ClientMessageType.JOIN]: {};
+  [ClientMessageType.JOIN]: { uuid: string };
 
   [ClientMessageType.MOVE_PLAYER]: { newPosition: Location };
 
@@ -27,7 +27,7 @@ export type ClientAmongusPayloadType = {
 };
 
 export interface ClientAmongusPayload<T extends ClientMessageType> {
-  uuid: string;
+  // uuid: string;
   type: T;
   payload: ClientAmongusPayloadType[T];
 }
@@ -101,7 +101,7 @@ class AmongusSocket extends EventEmitter {
         // TODO: this may cause errors later on
         const d = typeof data === 'string' ? JSON.parse(data) : data;
 
-        if (!d.uuid || !d.type) return;
+        if (!d.type) return;
         super.emit(d.type, {
           ...d,
           connectionId: this.id,

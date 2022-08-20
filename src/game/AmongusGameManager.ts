@@ -20,7 +20,7 @@ export default class AmongusGameManager {
   public addConnection(socket: Socket) {
     const s = new AmongusSocket(this, socket);
     this.connections.push(s);
-    s.on(ClientMessageType.JOIN, ({ uuid }) => {
+    s.on(ClientMessageType.JOIN, ({ payload: { uuid } }) => {
       const game = this.getGame(uuid);
       if (game) {
         game.addPlayer(s);
