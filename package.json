@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "ts-node --project tsconfig.json src/index.ts",
     "compile": "tsc --project tsconfig.json",
-    "update:types": "npm install https://github.com/BananasAmIRite/amongus-types"
+    "update:types": "npm install github:BananasAmIRite/amongus-types"
   },
   "keywords": [],
   "author": "",
