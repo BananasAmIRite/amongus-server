@@ -1,7 +1,8 @@
 import { Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import AmongusGame from './AmongusGame';
-import AmongusSocket, { ClientMessageType, ServerMessageType } from '../AmongusSocket';
+import AmongusSocket from '../AmongusSocket';
+import { ClientMessageType, ServerMessageType } from 'amongus-types';
 
 export default class AmongusGameManager {
   private games: Map<string, AmongusGame>;
@@ -37,8 +38,6 @@ export default class AmongusGameManager {
   }
 
   public getConnection(uuid: string): AmongusSocket | undefined {
-    console.log('a');
-
     return this.connections.find((e) => e.getId() === uuid);
   }
 

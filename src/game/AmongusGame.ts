@@ -1,19 +1,14 @@
 import AmongusGameManager from './AmongusGameManager';
 import AmongusMapLoader from './map/AmongusMapLoader';
 import AmongusPlayer from './AmongusPlayer';
-import AmongusSocket, { ClientMessageType, ServerAmongusPayloadType, ServerMessageType } from '../AmongusSocket';
+import AmongusSocket from '../AmongusSocket';
+import { ClientMessageType, ServerAmongusPayloadType, ServerMessageType, GameRole } from 'amongus-types';
 import { randomSubset } from '../utils/utils';
 import { IMPOSTER_AMOUNT } from '../constants';
-import { Server } from 'http';
 
 // declare interface AmongusSocket {
 //   on<K extends ClientMessageType>(s: K, listener: (v: AmongusPayload<K>) => void): this;
 // }
-
-export enum GameRole {
-  IMPOSTER = 'imposter',
-  CREWMATES = 'crewmate',
-}
 
 export default class AmongusGame {
   private players: AmongusPlayer[] = [];

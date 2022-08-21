@@ -1,4 +1,3 @@
-import { isThisTypeNode } from 'typescript';
 import AmongusPlayer from '../AmongusPlayer';
 import AmongusCollisionMap from './AmongusCollisionMap';
 import AmongusTasksManager from './task/AmongusTasksManager';

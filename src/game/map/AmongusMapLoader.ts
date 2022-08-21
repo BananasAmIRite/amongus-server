@@ -1,7 +1,7 @@
 import AmongusGame from '../AmongusGame';
 import AmongusMap from './AmongusMap';
 import AmongusPlayer from '../AmongusPlayer';
-import { ServerMessageType } from '../../AmongusSocket';
+import { ServerMessageType } from 'amongus-types';
 
 export default class AmongusMapLoader {
   private currentMap!: AmongusMap;

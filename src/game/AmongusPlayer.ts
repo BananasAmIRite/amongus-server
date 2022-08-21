@@ -1,13 +1,14 @@
 import AmongusGame from './AmongusGame';
-import AmongusSocket, { ClientAmongusPayloadType, ClientMessageType, ServerMessageType } from '../AmongusSocket';
-import { Location } from '../utils/types';
+import AmongusSocket from '../AmongusSocket';
+import {
+  Location,
+  ClientAmongusPayloadType,
+  ClientMessageType,
+  ServerMessageType,
+  SerializedPlayer,
+} from 'amongus-types';
 import { AmongusTask } from './map/task/AmongusTasksManager';
 import { TASK_AMOUNT } from '../constants';
-
-export interface SerializedPlayer {
-  id: string;
-  position: Location;
-}
 
 type ClientListener<T extends ClientMessageType> = (data: ClientAmongusPayloadType[T]) => void;
 

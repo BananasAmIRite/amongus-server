@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import { Location } from '../../../utils/types';
+import { Location } from 'amongus-types';
 import { randomSubset } from '../../../utils/utils';
 
 export interface AmongusTask {
