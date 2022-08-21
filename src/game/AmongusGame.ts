@@ -6,10 +6,6 @@ import { ClientMessageType, ServerAmongusPayloadType, ServerMessageType, GameRol
 import { randomSubset } from '../utils/utils';
 import { IMPOSTER_AMOUNT } from '../constants';
 
-// declare interface AmongusSocket {
-//   on<K extends ClientMessageType>(s: K, listener: (v: AmongusPayload<K>) => void): this;
-// }
-
 export default class AmongusGame {
   private players: AmongusPlayer[] = [];
 

@@ -10,7 +10,6 @@ import {
 } from 'amongus-types';
 
 export interface ClientAmongusPayload<T extends ClientMessageType> {
-  // uuid: string;
   type: T;
   payload: ClientAmongusPayloadType[T];
 }
@@ -72,16 +71,3 @@ class AmongusSocket extends EventEmitter {
 }
 
 export default AmongusSocket;
-
-// // client
-// socket.on('server:playerJoin', ({ player }) => {
-//   createPlayer(player);
-// });
-
-// socket.emit(
-//   JSON.stringify({
-//     uuid: 'whatverer',
-//     type: 'client:join',
-//     payload: {},
-//   })
-// );
