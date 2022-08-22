@@ -93,7 +93,10 @@ export default class AmongusPlayer {
   public kill() {
     this.isDead = true;
     this.deadBodyPosition = this.position;
-    this.game.broadcast(ServerMessageType.PLAYER_DEATH, { playerId: this.getId() });
+    this.game.broadcast(ServerMessageType.PLAYER_DEATH, {
+      playerId: this.getId(),
+      deathPosition: this.deadBodyPosition,
+    });
   }
 
   public getTasks() {
@@ -106,6 +109,7 @@ export default class AmongusPlayer {
       position: this.position,
       isDead: this.isDead,
       deadBodyPosition: this.deadBodyPosition,
+      displayName: this.connection.getDisplayName(),
     };
   }
 

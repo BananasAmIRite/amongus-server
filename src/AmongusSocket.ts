@@ -68,6 +68,10 @@ class AmongusSocket extends EventEmitter {
   public getSocket() {
     return this.socket;
   }
+
+  public getDisplayName() {
+    return this.displayName;
+  }
 }
 
 export default AmongusSocket;
