@@ -9,10 +9,16 @@ const app = express();
 
 const server = createServer(app);
 
-const io = new SocketServer(server);
+const io = new SocketServer(server, {
+  cors: {
+    origin: '*',
+  },
+});
 
 io.on('connection', (socket) => {
-  gameManager.addConnection(socket);
+  const displayName = socket.handshake.query.displayName;
+  if (typeof displayName !== 'string') return;
+  gameManager.addConnection(socket, displayName);
 });
 
 app.post('/newgame', (req, res) => {

@@ -18,8 +18,8 @@ export default class AmongusGameManager {
     return uuidv4();
   }
 
-  public addConnection(socket: Socket) {
-    const s = new AmongusSocket(this, socket);
+  public addConnection(socket: Socket, displayName: string) {
+    const s = new AmongusSocket(this, socket, displayName);
     this.connections.push(s);
     s.on(ClientMessageType.JOIN, ({ payload: { uuid } }) => {
       const game = this.getGame(uuid);

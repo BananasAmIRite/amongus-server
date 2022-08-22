@@ -19,7 +19,7 @@ export default class AmongusGame {
     this.mapLoader = new AmongusMapLoader(
       this,
       'lobby-map.png',
-      './assets/lobby-map-collision.png',
+      './assets/lobby-map-collision.json',
       './assets/lobby-map-tasks.json'
     );
 
@@ -37,6 +37,8 @@ export default class AmongusGame {
 
     if (this.started)
       return this.broadcastToPlayer(p, ServerMessageType.DENY_JOIN, { reason: 'Game has already started' });
+    if (this.players.findIndex((e) => e.getId() === p.getId()))
+      return this.broadcastToPlayer(p, ServerMessageType.DENY_JOIN, { reason: 'Already joined' });
 
     this.broadcastToPlayer(p, ServerMessageType.ACCEPT_JOIN, { selfPlayer: p.serialize() });
     this.mapLoader.onPlayerJoin(p);
@@ -79,7 +81,7 @@ export default class AmongusGame {
 
   private start() {
     this.started = true;
-    this.mapLoader.setMap('main-map.png', './assets/main-map-collision.png', './assets/main-map-tasks.json');
+    this.mapLoader.setMap('main-map.png', './assets/main-map-collision.json', './assets/main-map-tasks.json');
     this.imposters = randomSubset(this.players, IMPOSTER_AMOUNT);
   }
 

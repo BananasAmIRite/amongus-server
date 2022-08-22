@@ -29,7 +29,7 @@ export interface ServerAmongusPayload<T extends ServerMessageType> {
 class AmongusSocket extends EventEmitter {
   private id: string;
 
-  constructor(private manager: AmongusGameManager, private socket: Socket) {
+  constructor(private manager: AmongusGameManager, private socket: Socket, private displayName: string) {
     super();
     this.id = uuidv4();
     socket.on(
