@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
@@ -14,6 +15,12 @@ const io = new SocketServer(server, {
     origin: '*',
   },
 });
+
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 io.on('connection', (socket) => {
   const displayName = socket.handshake.query.displayName;

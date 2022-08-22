@@ -6,8 +6,9 @@ import {
   ClientMessageType,
   ServerMessageType,
   SerializedPlayer,
+  GameRole,
+  AmongusTask,
 } from 'amongus-types';
-import { AmongusTask } from './map/task/AmongusTasksManager';
 import { TASK_AMOUNT } from '../constants';
 
 type ClientListener<T extends ClientMessageType> = (data: ClientAmongusPayloadType[T]) => void;
@@ -16,6 +17,7 @@ export default class AmongusPlayer {
   private position: Location = { x: 0, y: 0 };
   private tasks: AmongusTask[] = [];
   private isDead: boolean = false;
+  private deadBodyPosition: Location = { x: 0, y: 0 };
 
   private _moveListener: ClientListener<ClientMessageType.MOVE_PLAYER> = (data) => {
     const oldPos = this.getPosition();
@@ -48,6 +50,7 @@ export default class AmongusPlayer {
     this.tasks = this.game.getCurrentMap().getTasks().randomTaskSet(TASK_AMOUNT);
     this.game.broadcastToPlayer(this, ServerMessageType.GAME_PLAYER_DATA, {
       tasks: this.tasks,
+      role: isImposter ? GameRole.IMPOSTER : GameRole.CREWMATES,
     });
   }
 
@@ -89,6 +92,7 @@ export default class AmongusPlayer {
 
   public kill() {
     this.isDead = true;
+    this.deadBodyPosition = this.position;
     this.game.broadcast(ServerMessageType.PLAYER_DEATH, { playerId: this.getId() });
   }
 
@@ -100,6 +104,8 @@ export default class AmongusPlayer {
     return {
       id: this.getId(),
       position: this.position,
+      isDead: this.isDead,
+      deadBodyPosition: this.deadBodyPosition,
     };
   }
 

@@ -1,11 +1,6 @@
 import { readFileSync } from 'fs';
-import { Location } from 'amongus-types';
+import { AmongusTask } from 'amongus-types';
 import { randomSubset } from '../../../utils/utils';
-
-export interface AmongusTask {
-  type: string;
-  position: Location;
-}
 
 export default class AmongusTasksManager {
   private tasks: AmongusTask[];

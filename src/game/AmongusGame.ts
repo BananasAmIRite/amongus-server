@@ -37,7 +37,7 @@ export default class AmongusGame {
 
     if (this.started)
       return this.broadcastToPlayer(p, ServerMessageType.DENY_JOIN, { reason: 'Game has already started' });
-    if (this.players.findIndex((e) => e.getId() === p.getId()))
+    if (this.players.findIndex((e) => e.getId() === p.getId()) !== -1)
       return this.broadcastToPlayer(p, ServerMessageType.DENY_JOIN, { reason: 'Already joined' });
 
     this.broadcastToPlayer(p, ServerMessageType.ACCEPT_JOIN, { gameUuid: this.id, selfPlayer: p.serialize() });

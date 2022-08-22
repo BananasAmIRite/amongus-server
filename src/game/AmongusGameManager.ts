@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
+import { customAlphabet } from 'nanoid';
 import AmongusGame from './AmongusGame';
 import AmongusSocket from '../AmongusSocket';
 import { ClientMessageType, ServerMessageType } from 'amongus-types';
@@ -15,7 +15,9 @@ export default class AmongusGameManager {
   }
 
   private generateId(): string {
-    return uuidv4();
+    const alpha = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const id = customAlphabet(alpha, 5)();
+    return this.games.has(id) ? this.generateId() : id;
   }
 
   public addConnection(socket: Socket, displayName: string) {
