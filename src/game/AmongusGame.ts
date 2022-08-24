@@ -16,12 +16,7 @@ export default class AmongusGame {
 
   public constructor(private manager: AmongusGameManager, private id: string, private initiatingSocket: AmongusSocket) {
     // set initial lobby state
-    this.mapLoader = new AmongusMapLoader(
-      this,
-      'lobby-map.png',
-      './assets/lobby-map-collision.json',
-      './assets/lobby-map-tasks.json'
-    );
+    this.mapLoader = new AmongusMapLoader(this, './asset/lobby-map-config.json');
 
     this.initiatingSocket.getSocket().on('disconnect', () => {
       this.end();
@@ -57,6 +52,10 @@ export default class AmongusGame {
     this.removeImposter(plr);
   }
 
+  public getPlayer(id: string): AmongusPlayer | undefined {
+    return this.players.find((e) => e.getId() === id);
+  }
+
   private removeImposter(imposter: AmongusPlayer) {
     const i = this.imposters.findIndex((e) => e.getId() === imposter.getId());
     if (i < 0) return;
@@ -81,7 +80,7 @@ export default class AmongusGame {
 
   private start() {
     this.started = true;
-    this.mapLoader.setMap('main-map.png', './assets/main-map-collision.json', './assets/main-map-tasks.json');
+    this.mapLoader.setMap('./asset/main-map-config.json');
     this.imposters = randomSubset(this.players, IMPOSTER_AMOUNT);
   }
 

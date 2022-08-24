@@ -9,5 +9,7 @@ export const TASK_RADIUS = 10;
    the first 100x100 pixels (so (0, 0) to (100, 100)) in the image will not be accessible
 
    ** coordinates will be in map pixel coordinates
+
+   in short, in game, the collision map is scaled up to the MAP_TILE_SIZE and compared to see if anything collides or not
 */
 export const MAP_TILE_SIZE = 100;

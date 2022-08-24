@@ -5,19 +5,14 @@ import { ServerMessageType } from 'amongus-types';
 
 export default class AmongusMapLoader {
   private currentMap!: AmongusMap;
-  public constructor(
-    private game: AmongusGame,
-    initialAssetPath: string,
-    initialCollisionPath: string,
-    initialTasksPath: string
-  ) {
-    this.setMap(initialAssetPath, initialCollisionPath, initialTasksPath);
+  public constructor(private game: AmongusGame, initialAssetConfigPath: string) {
+    this.setMap(initialAssetConfigPath);
   }
 
-  public setMap(assetPath: string, collisionMapPath: string, tasksPath: string) {
-    const m = new AmongusMap(assetPath, collisionMapPath, tasksPath);
+  public setMap(assetConfigPath: string) {
+    const m = new AmongusMap(assetConfigPath);
     this.currentMap = m;
-    this.game.broadcast(ServerMessageType.LOAD_MAP, { resource: assetPath });
+    this.game.broadcast(ServerMessageType.LOAD_MAP, { resource: this.currentMap.getAssetPath() });
   }
 
   public onPlayerJoin(p: AmongusPlayer) {

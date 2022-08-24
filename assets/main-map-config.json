@@ -1,0 +1,6 @@
+{
+  "asset": "main-map.png",
+  "collision": "./assets/main-map-collision.json",
+  "tasks": "./assets/main-map-tasks.json",
+  "vents": "./assets/main-map-vents.json"
+}

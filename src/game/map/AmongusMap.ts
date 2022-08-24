@@ -1,33 +1,43 @@
 import AmongusPlayer from '../AmongusPlayer';
 import AmongusCollisionMap from './collision/AmongusCollisionMap';
 import AmongusTasksManager from './task/AmongusTasksManager';
+import { readFileSync } from 'fs';
+import AmongusVentsManager from './vents/AmongusVentsManager';
+
+export interface MapConfig {
+  asset: string;
+  collision: string;
+  tasks: string;
+  vents: string;
+}
 
 export default class AmongusMap {
   private tasks: AmongusTasksManager;
   private collisionMap: AmongusCollisionMap;
-  constructor(
-    private clientMapAssetPath: string,
-    private serverMapCollisionMapPath: string,
-    private serverMapTasksPath: string
-  ) {
-    this.tasks = new AmongusTasksManager(serverMapTasksPath);
-    this.collisionMap = this.loadCollisionMap(serverMapCollisionMapPath);
+  private vents: AmongusVentsManager;
+  private config: MapConfig;
+  constructor(private mapAssetConfigPath: string) {
+    this.config = JSON.parse(readFileSync(mapAssetConfigPath, 'utf-8'));
+    if (!isMapConfig(this.config)) throw new Error(`Invalid map config: ${mapAssetConfigPath}`);
+    this.tasks = new AmongusTasksManager(this.config.tasks);
+    this.collisionMap = new AmongusCollisionMap(this.config.collision);
+    this.vents = new AmongusVentsManager(this.config.vents);
   }
 
   public getAssetPath() {
-    return this.clientMapAssetPath;
+    return this.config.asset;
   }
 
   public getCollisionPath() {
-    return this.serverMapCollisionMapPath;
+    return this.config.collision;
   }
 
   public getTasksPath() {
-    return this.serverMapTasksPath;
+    return this.config.tasks;
   }
 
-  private loadCollisionMap(path: string): AmongusCollisionMap {
-    return new AmongusCollisionMap(path);
+  public getVentsPath() {
+    return this.config.vents;
   }
 
   public isColliding(player: AmongusPlayer): boolean {
@@ -37,4 +47,16 @@ export default class AmongusMap {
   public getTasks() {
     return this.tasks;
   }
+
+  public getCollisionMap() {
+    return this.collisionMap;
+  }
+
+  public getVents() {
+    return this.vents;
+  }
+}
+
+function isMapConfig(obj: any): obj is MapConfig {
+  return 'asset' in obj && 'collision' in obj && 'tasks' in obj && 'vents' in obj;
 }

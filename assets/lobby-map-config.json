@@ -1,0 +1,6 @@
+{
+  "asset": "lobby-map.png",
+  "collision": "./assets/lobby-map-collision.json",
+  "tasks": "./assets/lobby-map-tasks.json",
+  "vents": "./assets/lobby-map-vents.json"
+}
