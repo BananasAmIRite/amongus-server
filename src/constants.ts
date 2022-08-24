@@ -13,3 +13,7 @@ export const TASK_RADIUS = 10;
    in short, in game, the collision map is scaled up to the MAP_TILE_SIZE and compared to see if anything collides or not
 */
 export const MAP_TILE_SIZE = 100;
+
+// change these once assets are made
+export const PLAYER_WIDTH = 65;
+export const PLAYER_HEIGHT = 100;

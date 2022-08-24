@@ -3,6 +3,7 @@ import AmongusCollisionMap from './collision/AmongusCollisionMap';
 import AmongusTasksManager from './task/AmongusTasksManager';
 import { readFileSync } from 'fs';
 import AmongusVentsManager from './vents/AmongusVentsManager';
+import { PLAYER_HEIGHT, PLAYER_WIDTH } from '../../constants';
 
 export interface MapConfig {
   asset: string;
@@ -41,7 +42,7 @@ export default class AmongusMap {
   }
 
   public isColliding(player: AmongusPlayer): boolean {
-    return this.collisionMap.isColliding(player.getPosition());
+    return this.collisionMap.isColliding(player.getPosition(), PLAYER_WIDTH, PLAYER_HEIGHT);
   }
 
   public getTasks() {

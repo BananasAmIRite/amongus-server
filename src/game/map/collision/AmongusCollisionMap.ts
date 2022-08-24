@@ -20,11 +20,25 @@ export default class AmongusCollisionMap {
     }
   }
 
-  public isColliding(loc: Location) {
+  public isColliding(loc: Location, width: number, height: number) {
     // calculates the collision block the player is in, then checks if it is a colliding or noncolliding block
-    return this.getCollisionBlock(
-      Math.floor(loc.x / this.collisionMap.scale),
-      Math.floor(loc.y / this.collisionMap.scale)
+    return (
+      this.getCollisionBlock(
+        Math.floor(loc.x / this.collisionMap.scale),
+        Math.floor(loc.y / this.collisionMap.scale)
+      ) ||
+      this.getCollisionBlock(
+        Math.floor((loc.x + width) / this.collisionMap.scale),
+        Math.floor(loc.y / this.collisionMap.scale)
+      ) ||
+      this.getCollisionBlock(
+        Math.floor(loc.x / this.collisionMap.scale),
+        Math.floor((loc.y + height) / this.collisionMap.scale)
+      ) ||
+      this.getCollisionBlock(
+        Math.floor((loc.x + width) / this.collisionMap.scale),
+        Math.floor((loc.y + height) / this.collisionMap.scale)
+      )
     );
   }
 }
