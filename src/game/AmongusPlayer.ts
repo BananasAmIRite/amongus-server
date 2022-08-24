@@ -138,7 +138,8 @@ export default class AmongusPlayer {
   public setVisibility(visible: boolean) {
     this.isVisible = visible;
     this.game.broadcast(ServerMessageType.PLAYER_SET_VISIBLE, {
-      visbility: this.isVisible,
+      playerId: this.getId(),
+      visibility: this.isVisible,
     });
   }
 
