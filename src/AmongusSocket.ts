@@ -19,6 +19,10 @@ declare interface AmongusSocket {
     s: K,
     listener: (v: ClientAmongusPayload<K> & { connectionId: string }) => void
   ): this;
+  addListener<K extends ClientMessageType>(
+    s: K,
+    listener: (v: ClientAmongusPayload<K> & { connectionId: string }) => void
+  ): this;
 }
 
 export interface ServerAmongusPayload<T extends ServerMessageType> {
@@ -56,7 +60,7 @@ class AmongusSocket extends EventEmitter {
   }
 
   public send<T extends ServerMessageType>(type: T, payload: ServerAmongusPayloadType[T]) {
-    console.log('sending: ' + type);
+    // console.log('sending: ' + type);
 
     this.socket.emit(type, payload);
   }

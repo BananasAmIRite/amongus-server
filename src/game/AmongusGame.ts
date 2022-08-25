@@ -2,9 +2,10 @@ import AmongusGameManager from './AmongusGameManager';
 import AmongusMapLoader from './map/AmongusMapLoader';
 import AmongusPlayer from './AmongusPlayer';
 import AmongusSocket from '../AmongusSocket';
-import { ClientMessageType, ServerAmongusPayloadType, ServerMessageType, GameRole } from 'amongus-types';
+import { ClientMessageType, ServerAmongusPayloadType, ServerMessageType, GameRole, CharacterType } from 'amongus-types';
 import { randomSubset } from '../utils/utils';
 import { IMPOSTER_AMOUNT } from '../constants';
+import { Server } from 'http';
 
 export default class AmongusGame {
   private players: AmongusPlayer[] = [];
@@ -14,9 +15,11 @@ export default class AmongusGame {
 
   private mapLoader: AmongusMapLoader;
 
+  private availableCharacters: CharacterType[] = Object.values(CharacterType);
+
   public constructor(private manager: AmongusGameManager, private id: string, private initiatingSocket: AmongusSocket) {
     // set initial lobby state
-    this.mapLoader = new AmongusMapLoader(this, './asset/lobby-map-config.json');
+    this.mapLoader = new AmongusMapLoader(this, './assets/lobby-map-config.json');
 
     this.initiatingSocket.getSocket().on('disconnect', () => {
       this.end();
@@ -36,6 +39,9 @@ export default class AmongusGame {
       return this.broadcastToPlayer(p, ServerMessageType.DENY_JOIN, { reason: 'Already joined' });
 
     this.broadcastToPlayer(p, ServerMessageType.ACCEPT_JOIN, { gameUuid: this.id, selfPlayer: p.serialize() });
+    for (const plr of this.players) {
+      this.broadcastToPlayer(p, ServerMessageType.PLAYER_JOIN, { player: plr.serialize() });
+    }
     this.mapLoader.onPlayerJoin(p);
     this.broadcast(ServerMessageType.PLAYER_JOIN, { player: p.serialize() });
     this.players.push(p);
@@ -80,7 +86,7 @@ export default class AmongusGame {
 
   private start() {
     this.started = true;
-    this.mapLoader.setMap('./asset/main-map-config.json');
+    this.mapLoader.setMap('./assets/main-map-config.json');
     this.imposters = randomSubset(this.players, IMPOSTER_AMOUNT);
   }
 
@@ -117,5 +123,12 @@ export default class AmongusGame {
       this.removeAllListeners(p);
     }
     this.manager.removeGame(this.id);
+  }
+
+  public popRandomColor() {
+    const randIdx = Math.floor(Math.random() * this.availableCharacters.length);
+    const randColor = this.availableCharacters[randIdx];
+    this.availableCharacters.splice(randIdx, 1);
+    return randColor;
   }
 }

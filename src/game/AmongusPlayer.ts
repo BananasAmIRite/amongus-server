@@ -1,5 +1,5 @@
 import AmongusGame from './AmongusGame';
-import AmongusSocket from '../AmongusSocket';
+import AmongusSocket, { ClientAmongusPayload } from '../AmongusSocket';
 import {
   Location,
   ClientAmongusPayloadType,
@@ -8,10 +8,11 @@ import {
   SerializedPlayer,
   GameRole,
   AmongusTask,
+  CharacterType,
 } from 'amongus-types';
 import { TASK_AMOUNT } from '../constants';
 
-type ClientListener<T extends ClientMessageType> = (data: ClientAmongusPayloadType[T]) => void;
+type ClientListener<T extends ClientMessageType> = (data: ClientAmongusPayload<T>) => void;
 
 export default class AmongusPlayer {
   private position: Location = { x: 0, y: 0 };
@@ -22,24 +23,27 @@ export default class AmongusPlayer {
 
   private movable: boolean = true;
 
-  private _moveListener: ClientListener<ClientMessageType.MOVE_PLAYER> = (data) => {
+  private characterType: CharacterType;
+
+  private _moveListener: ClientListener<ClientMessageType.MOVE_PLAYER> = ({ payload: { newPosition } }) => {
     if (!this.movable) return;
     const oldPos = this.getPosition();
-    this.setPositionWithoutUpdate(data.newPosition);
+
+    this.setPositionWithoutUpdate(newPosition);
     if (this.game.getCurrentMap().isColliding(this)) {
       this.setPositionWithoutUpdate(oldPos);
       return;
     }
-    this.setPosition(data.newPosition);
+    this.setPosition(newPosition);
   };
 
-  private _finishTaskListener: ClientListener<ClientMessageType.FINISH_TASK> = (data) => {
+  private _finishTaskListener: ClientListener<ClientMessageType.FINISH_TASK> = ({ payload: { taskType } }) => {
     // TODO: add protection against fake task finishes
-    const taskIdx = this.tasks.findIndex((e) => e.type === data.taskType);
+    const taskIdx = this.tasks.findIndex((e) => e.type === taskType);
     this.tasks.splice(taskIdx, 1);
   };
 
-  private _ventListener: ClientListener<ClientMessageType.VENT> = ({ id }) => {
+  private _ventListener: ClientListener<ClientMessageType.VENT> = ({ payload: { id } }) => {
     // TODO: add protection against fake vents finishes
     const vent = this.game.getCurrentMap().getVents().getVent(id);
     if (!vent) return;
@@ -53,7 +57,7 @@ export default class AmongusPlayer {
     this.movable = true;
   };
 
-  private _killListener: ClientListener<ClientMessageType.KILL> = ({ playerId }) => {
+  private _killListener: ClientListener<ClientMessageType.KILL> = ({ payload: { playerId } }) => {
     const plr = this.game.getPlayer(playerId);
     if (!plr) return;
 
@@ -61,6 +65,7 @@ export default class AmongusPlayer {
   };
 
   public constructor(private game: AmongusGame, private connection: AmongusSocket) {
+    this.characterType = game.popRandomColor();
     connection.getSocket().on('disconnect', () => {
       game.removePlayer(this);
     });
@@ -68,10 +73,13 @@ export default class AmongusPlayer {
     connection.on(ClientMessageType.LEAVE, () => {
       game.removePlayer(this);
     });
+
+    this.setupListeners(false);
   }
 
   public startGame(isImposter: boolean) {
     this.isDead = false;
+    this.removeListeners();
     this.setupListeners(isImposter);
     this.tasks = this.game.getCurrentMap().getTasks().randomTaskSet(TASK_AMOUNT);
     this.game.broadcastToPlayer(this, ServerMessageType.GAME_PLAYER_DATA, {
@@ -148,6 +156,8 @@ export default class AmongusPlayer {
   }
 
   public serialize(): SerializedPlayer {
+    console.log(this.characterType);
+
     return {
       id: this.getId(),
       position: this.position,
@@ -155,6 +165,7 @@ export default class AmongusPlayer {
       deadBodyPosition: this.deadBodyPosition,
       displayName: this.connection.getDisplayName(),
       visible: this.isVisible,
+      characterType: this.characterType,
     };
   }
 
